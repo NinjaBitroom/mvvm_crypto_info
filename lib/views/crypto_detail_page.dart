@@ -18,40 +18,46 @@ class CryptoDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(crypto.cryptoName),
       ),
-      body: ListView(
-        children: [
-          Card.filled(
-            child: Column(
-              children: [
-                Image.network(crypto.image),
-                Text(
-                  crypto.symbol,
-                  style: context.textTheme.displayLarge,
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListView(
+          children: [
+            Card.filled(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Image.network(crypto.image),
+                    Text(
+                      crypto.symbol,
+                      style: context.textTheme.displayLarge,
+                    ),
+                    Text(
+                      'Preço: ${currency.format(crypto.price)}',
+                      style: context.textTheme.headlineLarge,
+                    ),
+                  ],
                 ),
-                Text(
-                  'Preço: ${currency.format(crypto.price)}',
-                  style: context.textTheme.headlineLarge,
-                ),
-              ],
-            ),
-          ),
-          Card.filled(
-            child: ListTile(
-              title: Text(crypto.description),
-              titleTextStyle: context.textTheme.titleLarge,
-              subtitleTextStyle: context.textTheme.bodyMedium,
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Volume total: ${currency.format(crypto.volume)}'),
-                  Text(
-                    'Capitalização de Mercado: ${currency.format(crypto.marketCap)}',
-                  ),
-                ],
               ),
             ),
-          ),
-        ],
+            Card.filled(
+              child: ListTile(
+                title: Text(crypto.description),
+                titleTextStyle: context.textTheme.titleLarge,
+                subtitleTextStyle: context.textTheme.bodyMedium,
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Volume total: ${currency.format(crypto.volume)}'),
+                    Text(
+                      'Capitalização de Mercado: ${currency.format(crypto.marketCap)}',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

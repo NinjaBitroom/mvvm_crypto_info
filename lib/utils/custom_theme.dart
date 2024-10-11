@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 final ThemeData customTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
   brightness: Brightness.light,
-  scaffoldBackgroundColor: Colors.white,
+  cardTheme: CardTheme(color: Colors.orange[100]),
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.orangeAccent,
     foregroundColor: Colors.white,
@@ -15,7 +15,8 @@ final ThemeData customTheme = ThemeData(
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      foregroundColor: Colors.white, backgroundColor: Colors.blue,
+      foregroundColor: Colors.white,
+      backgroundColor: Colors.blue,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     ),
   ),

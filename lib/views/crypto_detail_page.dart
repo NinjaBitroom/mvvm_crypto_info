@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -53,6 +54,23 @@ class CryptoDetailPage extends StatelessWidget {
                       'Capitalização de Mercado: ${currency.format(crypto.marketCap)}',
                     ),
                   ],
+                ),
+              ),
+            ),
+            Card.filled(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: LineChart(
+                  LineChartData(
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: crypto.priceHistory,
+                        isCurved: true,
+                        color: context.theme.primaryColor,
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

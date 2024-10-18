@@ -1,5 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
-
 class CryptoModel {
   final String cryptoName;
   final double price;
@@ -8,7 +6,7 @@ class CryptoModel {
   final int marketCap;
   final int volume;
   final String description;
-  final List<FlSpot> priceHistory;
+  final List<List<dynamic>> priceHistory;
 
   CryptoModel({
     required this.cryptoName,
@@ -23,13 +21,14 @@ class CryptoModel {
 
   factory CryptoModel.fromJson(Map<String, dynamic> json) {
     return CryptoModel(
-        cryptoName: json['name'],
-        price: json['current_price'].toDouble(),
-        symbol: json['symbol'],
-        image: json['image'],
-        marketCap: json['market_cap'],
-        volume: json['total_volume'],
-        description: json['id'],
-        priceHistory: json['price_history']);
+      cryptoName: json['name'],
+      price: json['current_price'].toDouble(),
+      symbol: json['symbol'],
+      image: json['image'],
+      marketCap: json['market_cap'],
+      volume: json['total_volume'],
+      description: json['id'],
+      priceHistory: json['price_history'],
+    );
   }
 }

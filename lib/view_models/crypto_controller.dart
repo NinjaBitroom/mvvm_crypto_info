@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mvvm_crypto_info/models/crypto_model.dart';
@@ -7,7 +6,10 @@ import 'package:mvvm_crypto_info/models/crypto_model.dart';
 class CryptoController extends GetxController {
   final isLoading = false.obs;
   final cryptos = <CryptoModel>[].obs;
-  final _dio = Dio();
+  final _dio = Dio(BaseOptions(
+    baseUrl: 'https://api.coingecko.com/api/v3',
+    queryParameters: {'vs_currency': 'brl'},
+  ));
 
   @override
   void onInit() {
@@ -16,44 +18,45 @@ class CryptoController extends GetxController {
   }
 
   void fetchCryptos() async {
+    bool error = false;
     try {
       isLoading(true);
-      final response = await _dio.get(
-        'https://api.coingecko.com/api/v3/coins/markets',
+      await Future.delayed(const Duration(seconds: 4));
+      final response = await _dio.get<List<dynamic>>(
+        '/coins/markets',
         queryParameters: {
-          'vs_currency': 'brl',
           'order': 'market_cap_desc',
           'per_page': 20,
           'page': 1,
-          'sparkline': false,
         },
       );
       if (response.statusCode == 200) {
-        final jsonData = response.data as List;
-        final loadedCryptos = jsonData.map((cryptoJson) {
-          final newResponse = _dio.get(
-            'https://api.coingecko.com/api/v3/coins/${cryptoJson['id']}/market_chart',
+        final jsonData = response.data;
+        final loadedCryptos = await jsonData?.map((cryptoJson) async {
+          await Future.delayed(const Duration(seconds: 6));
+          final newResponse = await _dio.get<Map<String, List<dynamic>>>(
+            '/coins/${cryptoJson['id']}/market_chart',
             queryParameters: {
-              'vs_currency': 'brl',
-              'days': 7,
+              'days': 30,
               'interval': 'daily',
             },
           );
-          cryptoJson['price_history'] = [
-            FlSpot(0, 30000), // Exemplo de preços
-            FlSpot(1, 31000),
-            FlSpot(2, 29000),
-            FlSpot(3, 32000),
-            FlSpot(4, 33000),
-          ];
+          cryptoJson['price_history'] = newResponse.data?['prices'];
           return CryptoModel.fromJson(cryptoJson);
-        }).toList();
-        cryptos.value = loadedCryptos;
+        }).wait;
+        cryptos.value = loadedCryptos!;
       }
-    } catch (e) {
+    } catch (e, s) {
       debugPrint('Erro ao buscar criptomoedas: $e');
+      debugPrint('Stacktrace: $s');
+      debugPrint('Por favor, tente novamente em 1 minuto.');
+      error = true;
     } finally {
       isLoading(false);
+      if (error) {
+        await Future.delayed(const Duration(minutes: 1));
+        debugPrint('Reinicie o app...');
+      }
     }
   }
 }

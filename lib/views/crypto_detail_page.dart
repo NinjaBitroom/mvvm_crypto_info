@@ -57,19 +57,23 @@ class CryptoDetailPage extends StatelessWidget {
                 ),
               ),
             ),
-            Card.filled(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: LineChart(
-                  LineChartData(
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: crypto.priceHistory,
-                        isCurved: true,
-                        color: context.theme.primaryColor,
-                        belowBarData: BarAreaData(show: false),
-                      ),
-                    ],
+            SizedBox(
+              height: 300,
+              child: Card.filled(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: LineChart(
+                    LineChartData(
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: crypto.priceHistory
+                              .map(
+                                (e) => FlSpot(e[0].toDouble(), e[1].toDouble()),
+                              )
+                              .toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

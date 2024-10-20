@@ -5,8 +5,8 @@ class CryptoModel {
   final String image;
   final int marketCap;
   final int volume;
-  final String description;
-  final List<List<dynamic>> priceHistory;
+  final String id;
+  List<dynamic>? priceHistory;
 
   CryptoModel({
     required this.cryptoName,
@@ -15,8 +15,8 @@ class CryptoModel {
     required this.image,
     required this.marketCap,
     required this.volume,
-    required this.description,
-    required this.priceHistory,
+    required this.id,
+    this.priceHistory,
   });
 
   factory CryptoModel.fromJson(Map<String, dynamic> json) {
@@ -27,7 +27,7 @@ class CryptoModel {
       image: json['image'],
       marketCap: json['market_cap'],
       volume: json['total_volume'],
-      description: json['id'],
+      id: json['id'],
       priceHistory: json['price_history'],
     );
   }

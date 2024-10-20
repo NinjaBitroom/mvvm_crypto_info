@@ -3,25 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mvvm_crypto_info/models/crypto_model.dart';
 
-class CryptoController extends GetxController {
-  final isLoading = false.obs;
-  final cryptos = <CryptoModel>[].obs;
+class CryptoController extends GetxController
+    with StateMixin<List<CryptoModel>> {
   final _dio = Dio(BaseOptions(
     baseUrl: 'https://api.coingecko.com/api/v3',
     queryParameters: {'vs_currency': 'brl'},
   ));
 
   @override
-  void onInit() {
-    fetchCryptos();
+  Future<void> onInit() async {
+    await fetchCryptos();
     super.onInit();
   }
 
-  void fetchCryptos() async {
-    bool error = false;
+  Future<void> fetchCryptos() async {
     try {
-      isLoading(true);
-      await Future.delayed(const Duration(seconds: 4));
+      change(null, status: RxStatus.loading());
       final response = await _dio.get<List<dynamic>>(
         '/coins/markets',
         queryParameters: {
@@ -32,31 +29,44 @@ class CryptoController extends GetxController {
       );
       if (response.statusCode == 200) {
         final jsonData = response.data;
-        final loadedCryptos = await jsonData?.map((cryptoJson) async {
-          await Future.delayed(const Duration(seconds: 6));
-          final newResponse = await _dio.get<Map<String, List<dynamic>>>(
-            '/coins/${cryptoJson['id']}/market_chart',
-            queryParameters: {
-              'days': 30,
-              'interval': 'daily',
-            },
-          );
-          cryptoJson['price_history'] = newResponse.data?['prices'];
+        final loadedCryptos = jsonData?.map((cryptoJson) {
           return CryptoModel.fromJson(cryptoJson);
-        }).wait;
-        cryptos.value = loadedCryptos!;
+        }).toList();
+        change(loadedCryptos, status: RxStatus.success());
       }
     } catch (e, s) {
       debugPrint('Erro ao buscar criptomoedas: $e');
       debugPrint('Stacktrace: $s');
-      debugPrint('Por favor, tente novamente em 1 minuto.');
-      error = true;
-    } finally {
-      isLoading(false);
-      if (error) {
-        await Future.delayed(const Duration(minutes: 1));
-        debugPrint('Reinicie o app...');
+      change(
+        null,
+        status: RxStatus.error(e.toString()),
+      );
+    }
+  }
+
+  Future<void> fetchCryptoChart(int index) async {
+    final crypto = state?[index];
+    change(state, status: RxStatus.loading());
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        '/coins/${crypto?.id}/market_chart',
+        queryParameters: {
+          'days': 30,
+          'interval': 'daily',
+        },
+      );
+      if (response.statusCode == 200) {
+        final jsonData = response.data;
+        crypto?.priceHistory = jsonData?['prices'];
+        change(state, status: RxStatus.success());
       }
+    } catch (e, s) {
+      debugPrint('Erro ao buscar histórico de preços: $e');
+      debugPrint('Stacktrace: $s');
+      change(
+        state,
+        status: RxStatus.error(e.toString()),
+      );
     }
   }
 }

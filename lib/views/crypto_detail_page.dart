@@ -4,81 +4,96 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mvvm_crypto_info/view_models/crypto_controller.dart';
 
-class CryptoDetailPage extends StatelessWidget {
+class CryptoDetailPage extends GetView<CryptoController> {
   final int index;
 
-  CryptoDetailPage({super.key, required this.index});
-
-  final cryptoController = Get.find<CryptoController>();
+  const CryptoDetailPage({super.key, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    final crypto = cryptoController.cryptos[index];
     final currency = NumberFormat.simpleCurrency();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(crypto.cryptoName),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ListView(
-          children: [
-            Card.filled(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Image.network(crypto.image),
-                    Text(
-                      crypto.symbol,
-                      style: context.textTheme.displayLarge,
-                    ),
-                    Text(
-                      'Preço: ${currency.format(crypto.price)}',
-                      style: context.textTheme.headlineLarge,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Card.filled(
-              child: ListTile(
-                title: Text(crypto.description),
-                titleTextStyle: context.textTheme.titleLarge,
-                subtitleTextStyle: context.textTheme.bodyMedium,
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Volume total: ${currency.format(crypto.volume)}'),
-                    Text(
-                      'Capitalização de Mercado: ${currency.format(crypto.marketCap)}',
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 300,
-              child: Card.filled(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: LineChart(
-                    LineChartData(
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: crypto.priceHistory
-                              .map(
-                                (e) => FlSpot(e[0].toDouble(), e[1].toDouble()),
-                              )
-                              .toList(),
+    return controller.obx(
+      (state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(state![index].cryptoName),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView(
+              children: [
+                Card.filled(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Image.network(state[index].image),
+                        Text(
+                          state[index].symbol,
+                          style: context.textTheme.displayLarge,
+                        ),
+                        Text(
+                          'Preço: ${currency.format(state[index].price)}',
+                          style: context.textTheme.headlineLarge,
                         ),
                       ],
                     ),
                   ),
                 ),
-              ),
+                Card.filled(
+                  child: ListTile(
+                    title: Text(state[index].id),
+                    titleTextStyle: context.textTheme.titleLarge,
+                    subtitleTextStyle: context.textTheme.bodyMedium,
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Volume total: ${currency.format(state[index].volume)}',
+                        ),
+                        Text(
+                          'Capitalização de Mercado: ${currency.format(state[index].marketCap)}',
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 300,
+                  child: Card.filled(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: LineChart(
+                        LineChartData(
+                          lineBarsData: [
+                            LineChartBarData(
+                              spots: state[index]
+                                  .priceHistory!
+                                  .map(
+                                    (e) => FlSpot(
+                                      e[0].toDouble(),
+                                      e[1].toDouble(),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
+        );
+      },
+      onLoading: Scaffold(
+        appBar: AppBar(
+          title: Text(controller.state![index].cryptoName),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
         ),
       ),
     );

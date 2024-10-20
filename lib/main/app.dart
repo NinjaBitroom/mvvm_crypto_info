@@ -7,5 +7,5 @@ final app = GetMaterialApp(
   initialBinding: InitialBinding(),
   debugShowCheckedModeBanner: false,
   theme: customTheme,
-  home: CryptoListPage(),
+  home: const CryptoListPage(),
 );

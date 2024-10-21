@@ -9,6 +9,18 @@ class CryptoDetailPage extends GetView<CryptoController> {
 
   const CryptoDetailPage({super.key, required this.index});
 
+  String formatNumber(double value) {
+    if (value >= 1000 && value < 1000000) {
+      return 'R\$ ${(value / 1000).toStringAsFixed(1)}K';
+    } else if (value >= 1000000 && value < 1000000000) {
+      return 'R\$ ${(value / 1000000).toStringAsFixed(1)}M';
+    } else if (value >= 1000000000) {
+      return 'R\$ ${(value / 1000000000).toStringAsFixed(1)}B';
+    } else {
+      return 'R\$ $value';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currency = Get.find<NumberFormat>();
@@ -81,6 +93,42 @@ class CryptoDetailPage extends GetView<CryptoController> {
                               color: context.theme.colorScheme.onSurfaceVariant,
                             ),
                           ],
+                          titlesData: FlTitlesData(
+                            rightTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                minIncluded: false,
+                                maxIncluded: false,
+                                reservedSize:
+                                    context.mediaQuerySize.width * 0.175,
+                                getTitlesWidget: (value, meta) =>
+                                    Text(formatNumber(value)),
+                              ),
+                            ),
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                maxIncluded: false,
+                                minIncluded: false,
+                                showTitles: true,
+                                getTitlesWidget: (value, meta) {
+                                  final date =
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                    value.toInt(),
+                                  );
+                                  final formattedDate = DateFormat(
+                                    'dd/MM',
+                                  ).format(date);
+                                  return Text(formattedDate);
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),

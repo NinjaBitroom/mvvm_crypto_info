@@ -65,6 +65,8 @@ class CryptoDetailPage extends GetView<CryptoController> {
                       padding: const EdgeInsets.all(8.0),
                       child: LineChart(
                         LineChartData(
+                          backgroundColor:
+                              context.theme.colorScheme.surfaceContainer,
                           lineBarsData: [
                             LineChartBarData(
                               spots: state[index]
@@ -76,6 +78,7 @@ class CryptoDetailPage extends GetView<CryptoController> {
                                     ),
                                   )
                                   .toList(),
+                              color: context.theme.colorScheme.onSurfaceVariant,
                             ),
                           ],
                         ),

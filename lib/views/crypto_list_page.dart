@@ -20,27 +20,13 @@ class CryptoListPage extends GetView<CryptoController> {
         ],
       ),
       body: controller.obx((state) {
-        return ListView.builder(
-          itemCount: state?.length,
-          itemBuilder: (context, index) {
-            var crypto = state?[index];
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2), // Cor da sombra
-                      spreadRadius: 2, // Espalhamento da sombra
-                      blurRadius: 8, // Borrão da sombra
-                      offset: const Offset(4, 4),
-                    ),
-                  ],
-                ),
-                width: MediaQuery.of(context).size.width * 0.80,
-                height: 70,
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.builder(
+            itemCount: state?.length,
+            itemBuilder: (context, index) {
+              var crypto = state?[index];
+              return Card.filled(
                 child: ListTile(
                   onTap: () {
                     controller.fetchCryptoChart(index);
@@ -54,6 +40,7 @@ class CryptoListPage extends GetView<CryptoController> {
                   title: Text(
                     crypto.cryptoName,
                     style: const TextStyle(fontSize: 20),
+                    maxLines: 1,
                   ),
                   subtitle: Text(
                     crypto.symbol.toUpperCase(),
@@ -64,9 +51,9 @@ class CryptoListPage extends GetView<CryptoController> {
                     style: const TextStyle(fontSize: 18),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         );
       }),
     );

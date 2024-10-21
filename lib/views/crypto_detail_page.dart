@@ -11,11 +11,11 @@ class CryptoDetailPage extends GetView<CryptoController> {
 
   String formatNumber(double value) {
     if (value >= 1000 && value < 1000000) {
-      return 'R\$ ${(value / 1000).toStringAsFixed(1)}K';
+      return 'R\$ ${(value / 1000).toStringAsFixed(0)}K';
     } else if (value >= 1000000 && value < 1000000000) {
-      return 'R\$ ${(value / 1000000).toStringAsFixed(1)}M';
+      return 'R\$ ${(value / 1000000).toStringAsFixed(0)}M';
     } else if (value >= 1000000000) {
-      return 'R\$ ${(value / 1000000000).toStringAsFixed(1)}B';
+      return 'R\$ ${(value / 1000000000).toStringAsFixed(0)}B';
     } else {
       return 'R\$ $value';
     }
@@ -45,7 +45,7 @@ class CryptoDetailPage extends GetView<CryptoController> {
                           style: context.textTheme.displayLarge,
                         ),
                         Text(
-                          'Preço: ${currency.format(state[index].price)}',
+                          'Preço: R\$ ${currency.format(state[index].price)}',
                           style: context.textTheme.headlineLarge,
                         ),
                       ],
@@ -61,24 +61,39 @@ class CryptoDetailPage extends GetView<CryptoController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Volume total: ${currency.format(state[index].volume)}',
+                          'Volume total: R\$ ${currency.format(state[index].volume)}',
                         ),
                         Text(
-                          'Capitalização de Mercado: ${currency.format(state[index].marketCap)}',
+                          'Capitalização de Mercado: R\$ ${currency.format(state[index].marketCap)}',
                         ),
                       ],
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 300,
-                  child: Card.filled(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                Card.filled(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: SizedBox(
+                      height: context.mediaQuerySize.height * 0.3,
                       child: LineChart(
                         LineChartData(
+                          lineTouchData: LineTouchData(
+                            touchTooltipData: LineTouchTooltipData(
+                              getTooltipColor: (touchedSpot) =>
+                                  context.theme.colorScheme.tertiaryContainer,
+                              getTooltipItems: (touchedSpots) => touchedSpots
+                                  .map(
+                                    (touchedSpot) => LineTooltipItem(
+                                      'R\$ ${currency.format(touchedSpot.y)}',
+                                      context.textTheme.titleMedium ??
+                                          const TextStyle(),
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
                           backgroundColor:
-                              context.theme.colorScheme.surfaceContainer,
+                              context.theme.colorScheme.secondaryContainer,
                           lineBarsData: [
                             LineChartBarData(
                               spots: state[index]
@@ -90,7 +105,8 @@ class CryptoDetailPage extends GetView<CryptoController> {
                                     ),
                                   )
                                   .toList(),
-                              color: context.theme.colorScheme.onSurfaceVariant,
+                              color: context
+                                  .theme.colorScheme.onSecondaryContainer,
                             ),
                           ],
                           titlesData: FlTitlesData(

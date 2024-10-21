@@ -48,7 +48,7 @@ class CryptoListPage extends GetView<CryptoController> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   trailing: Text(
-                    currency.format(crypto.price),
+                    'R\$ ${currency.format(crypto.price)}',
                     style: const TextStyle(fontSize: 18),
                   ),
                 ),

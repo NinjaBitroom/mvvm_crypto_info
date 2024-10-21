@@ -9,6 +9,7 @@ class CryptoListPage extends GetView<CryptoController> {
 
   @override
   Widget build(BuildContext context) {
+    final currency = Get.find<NumberFormat>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Preços de Criptomoedas'),
@@ -47,7 +48,7 @@ class CryptoListPage extends GetView<CryptoController> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   trailing: Text(
-                    NumberFormat.simpleCurrency().format(crypto.price),
+                    currency.format(crypto.price),
                     style: const TextStyle(fontSize: 18),
                   ),
                 ),

@@ -11,7 +11,7 @@ class CryptoDetailPage extends GetView<CryptoController> {
 
   @override
   Widget build(BuildContext context) {
-    final currency = NumberFormat.simpleCurrency();
+    final currency = Get.find<NumberFormat>();
     return controller.obx(
       (state) {
         return Scaffold(

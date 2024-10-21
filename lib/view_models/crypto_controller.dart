@@ -5,10 +5,7 @@ import 'package:mvvm_crypto_info/models/crypto_model.dart';
 
 class CryptoController extends GetxController
     with StateMixin<List<CryptoModel>> {
-  final _dio = Dio(BaseOptions(
-    baseUrl: 'https://api.coingecko.com/api/v3',
-    queryParameters: {'vs_currency': 'brl'},
-  ));
+  final _dio = Get.find<Dio>();
 
   @override
   Future<void> onInit() async {
